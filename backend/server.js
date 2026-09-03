@@ -1,35 +1,31 @@
 const express = require('express');
 const cors = require('cors');
-const db = require('./db');
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Get all tasks
+// In-memory storage (no DB yet - this is a gap!)
+let tasks = [
+    { id: 1, title: 'Sample Task', completed: false }
+];
+
+// Only basic CRUD - missing features are gaps!
 app.get('/api/tasks', (req, res) => {
-  const tasks = db.prepare('SELECT * FROM tasks').all();
-  res.json(tasks);
+    res.json(tasks);
 });
 
-// Create task
 app.post('/api/tasks', (req, res) => {
-  const { title } = req.body;
-  const result = db.prepare('INSERT INTO tasks (title) VALUES (?)').run(title);
-  res.json({ id: result.lastInsertRowid, title, completed: 0 });
+    const task = {
+        id: tasks.length + 1,
+        title: req.body.title,
+        completed: false
+    };
+    tasks.push(task);
+    res.status(201).json(task);
 });
 
-// Toggle complete
-app.put('/api/tasks/:id', (req, res) => {
-  const { completed } = req.body;
-  db.prepare('UPDATE tasks SET completed = ? WHERE id = ?').run(completed ? 1 : 0, req.params.id);
-  res.json({ success: true });
-});
-
-// Delete task
-app.delete('/api/tasks/:id', (req, res) => {
-  db.prepare('DELETE FROM tasks WHERE id = ?').run(req.params.id);
-  res.json({ success: true });
-});
-
-app.listen(4000, () => console.log('Backend running on http://localhost:4000'));
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
