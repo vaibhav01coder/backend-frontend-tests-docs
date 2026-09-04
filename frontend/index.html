@@ -1,13 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Task Manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Task Manager</h1>
-    <input type="text" id="taskInput" placeholder="Add a task">
-    <button onclick="addTask()">Add</button>
+
+    <div id="inputRow">
+        <input type="text" id="task-input" placeholder="Add a task...">
+        <select id="category-select">
+            <option value="">No category</option>
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Health">Health</option>
+            <option value="Other">Other</option>
+        </select>
+        <button id="add-task" onclick="addTask()">Add</button>
+    </div>
+
+    <div id="filterRow">
+        <input type="text" id="search-input" placeholder="Search tasks...">
+        <select id="category-filter">
+            <option value="">All categories</option>
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Health">Health</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+
     <ul id="taskList"></ul>
     <script src="app.js"></script>
 </body>
