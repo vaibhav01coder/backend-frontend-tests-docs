@@ -40,6 +40,14 @@ app.put('/api/tasks/:id', (req, res) => {
     }
 });
 
+// test-only reset — must be before /:id to avoid being swallowed by the wildcard
+app.delete('/api/tasks/__reset', (req, res) => {
+    const fs = require('fs');
+    const file = require('path').join(__dirname, 'tasks.json');
+    if (fs.existsSync(file)) fs.unlinkSync(file);
+    res.json({ success: true });
+});
+
 app.delete('/api/tasks/:id', (req, res) => {
     try {
         const found = db.delete(req.params.id);
