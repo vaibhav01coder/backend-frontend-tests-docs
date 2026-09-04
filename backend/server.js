@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const db = require('./db');
 
 const app = express();
@@ -7,6 +8,11 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 const VALID_CATEGORIES = ['', 'Work', 'Personal', 'Shopping', 'Health', 'Other'];
+
+function isValidId(id) {
+    const n = Number(id);
+    return Number.isInteger(n) && n > 0;
+}
 
 app.get('/api/tasks', (req, res) => {
     try {
@@ -30,8 +36,9 @@ app.post('/api/tasks', (req, res) => {
 
 app.put('/api/tasks/:id', (req, res) => {
     try {
+        if (!isValidId(req.params.id)) return res.status(400).json({ error: 'id must be a positive integer' });
         const { completed } = req.body;
-        if (completed === undefined) return res.status(400).json({ error: 'completed required' });
+        if (typeof completed !== 'boolean') return res.status(400).json({ error: 'completed must be a boolean' });
         const found = db.update(req.params.id, completed);
         if (!found) return res.status(404).json({ error: 'task not found' });
         res.json({ success: true });
@@ -40,16 +47,16 @@ app.put('/api/tasks/:id', (req, res) => {
     }
 });
 
-// test-only reset — must be before /:id to avoid being swallowed by the wildcard
+// test-only reset — must stay before /:id to avoid being matched as a task id
 app.delete('/api/tasks/__reset', (req, res) => {
-    const fs = require('fs');
-    const file = require('path').join(__dirname, 'tasks.json');
-    if (fs.existsSync(file)) fs.unlinkSync(file);
+    const file = path.join(__dirname, 'tasks.json');
+    try { fs.unlinkSync(file); } catch { /* already gone */ }
     res.json({ success: true });
 });
 
 app.delete('/api/tasks/:id', (req, res) => {
     try {
+        if (!isValidId(req.params.id)) return res.status(400).json({ error: 'id must be a positive integer' });
         const found = db.delete(req.params.id);
         if (!found) return res.status(404).json({ error: 'task not found' });
         res.json({ success: true });

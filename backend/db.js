@@ -2,18 +2,23 @@ const fs = require('fs');
 const path = require('path');
 
 const FILE = path.join(__dirname, 'tasks.json');
+const TMP  = FILE + '.tmp';
 
 function load() {
-    if (!fs.existsSync(FILE)) return { nextId: 1, tasks: [] };
     try {
         return JSON.parse(fs.readFileSync(FILE, 'utf8'));
-    } catch {
+    } catch (err) {
+        if (err.code !== 'ENOENT') {
+            console.error('tasks.json parse/read error — starting fresh:', err.message);
+        }
         return { nextId: 1, tasks: [] };
     }
 }
 
 function save(data) {
-    fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
+    // atomic write: write to .tmp then rename so a crash mid-write never corrupts the file
+    fs.writeFileSync(TMP, JSON.stringify(data, null, 2));
+    fs.renameSync(TMP, FILE);
 }
 
 module.exports = {
@@ -37,7 +42,7 @@ module.exports = {
         const data = load();
         const task = data.tasks.find(t => t.id === Number(id));
         if (!task) return false;
-        task.completed = completed ? 1 : 0;
+        task.completed = completed === true ? 1 : 0;
         save(data);
         return true;
     },
