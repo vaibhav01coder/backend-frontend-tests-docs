@@ -1,31 +1,30 @@
 const express = require('express');
-const cors = require('cors');
 const path = require('path');
+const db = require('./db');
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// In-memory storage (no DB yet - this is a gap!)
-let tasks = [
-    { id: 1, title: 'Sample Task', completed: false }
-];
-
-// Only basic CRUD - missing features are gaps!
 app.get('/api/tasks', (req, res) => {
-    res.json(tasks);
+    const { category, search } = req.query;
+    res.json(db.getAll({ category, search }));
 });
 
 app.post('/api/tasks', (req, res) => {
-    const task = {
-        id: tasks.length + 1,
-        title: req.body.title,
-        completed: false
-    };
-    tasks.push(task);
-    res.status(201).json(task);
+    const { title, category } = req.body;
+    if (!title || !title.trim()) return res.status(400).json({ error: 'title required' });
+    res.json(db.insert(title.trim(), category || ''));
 });
 
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.put('/api/tasks/:id', (req, res) => {
+    db.update(req.params.id, req.body.completed);
+    res.json({ success: true });
+});
+
+app.delete('/api/tasks/:id', (req, res) => {
+    db.delete(req.params.id);
+    res.json({ success: true });
+});
+
+app.listen(4000, () => console.log('Running on http://localhost:4000'));

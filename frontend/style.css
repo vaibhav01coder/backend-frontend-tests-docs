@@ -1,0 +1,127 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    max-width: 480px;
+    margin: 48px auto;
+    padding: 0 16px;
+    color: #1a1a1a;
+}
+
+h1 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+#inputRow {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+#filterRow {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+#filterRow input,
+#filterRow select {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+#filterRow input:focus,
+#filterRow select:focus {
+    outline: none;
+    border-color: #555;
+}
+
+select {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: #fff;
+    cursor: pointer;
+}
+
+.category-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 0.72rem;
+    background: #e8e8e8;
+    color: #555;
+    vertical-align: middle;
+}
+
+#taskInput {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+#taskInput:focus {
+    outline: none;
+    border-color: #555;
+}
+
+button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    background: #1a1a1a;
+    color: #fff;
+}
+
+button:hover {
+    background: #333;
+}
+
+#taskList {
+    list-style: none;
+}
+
+#taskList li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+#taskList li span {
+    flex: 1;
+}
+
+#taskList li.completed span {
+    text-decoration: line-through;
+    color: #888;
+}
+
+#taskList li button {
+    background: transparent;
+    color: #c00;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border: 1px solid #c00;
+    border-radius: 4px;
+}
+
+#taskList li button:hover {
+    background: #c00;
+    color: #fff;
+}
