@@ -1,0 +1,5 @@
+node_modules/
+backend/tasks.json
+backend/tasks.json.tmp
+test-results/
+playwright-report/
