@@ -5,7 +5,11 @@ const FILE = path.join(__dirname, 'tasks.json');
 
 function load() {
     if (!fs.existsSync(FILE)) return { nextId: 1, tasks: [] };
-    return JSON.parse(fs.readFileSync(FILE, 'utf8'));
+    try {
+        return JSON.parse(fs.readFileSync(FILE, 'utf8'));
+    } catch {
+        return { nextId: 1, tasks: [] };
+    }
 }
 
 function save(data) {
@@ -32,12 +36,17 @@ module.exports = {
     update(id, completed) {
         const data = load();
         const task = data.tasks.find(t => t.id === Number(id));
-        if (task) task.completed = completed ? 1 : 0;
+        if (!task) return false;
+        task.completed = completed ? 1 : 0;
         save(data);
+        return true;
     },
     delete(id) {
         const data = load();
+        const exists = data.tasks.some(t => t.id === Number(id));
+        if (!exists) return false;
         data.tasks = data.tasks.filter(t => t.id !== Number(id));
         save(data);
+        return true;
     }
 };
